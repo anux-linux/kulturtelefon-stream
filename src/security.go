@@ -147,95 +147,95 @@ func createToken(username string, rights []string, exparation time.Time) (string
 
 func checkTokeHasRight(token, right, username string) bool {
 	if token == "" {
-		logWithCaller("Token is empty", InfoLog)
+		logWithCaller("Token is empty", WarnLog)
 		return false
 	}
 
 	if right == "" {
-		logWithCaller("Right is empty", InfoLog)
+		logWithCaller("Right is empty", WarnLog)
 		return false
 	}
 
 	if username == "" {
-		logWithCaller("Username is empty", InfoLog)
+		logWithCaller("Username is empty", WarnLog)
 		return false
 	}
 
 	if len(token) < len(tokenPrefix) {
-		logWithCaller("Token is too short", InfoLog)
+		logWithCaller("Token is too short", WarnLog)
 		return false
 	}
 
 	if token[:len(tokenPrefix)] != tokenPrefix {
-		logWithCaller("Token does not start with k_token: "+token[:len(tokenPrefix)], InfoLog)
+		logWithCaller("Token does not start with k_token: "+token[:len(tokenPrefix)], WarnLog)
 		return false
 	}
 
 	decrypted, err := decryptString(token[len(tokenPrefix):])
 	if err != nil {
-		logWithCaller("Failed to decrypt token: "+err.Error(), InfoLog)
+		logWithCaller("Failed to decrypt token: "+err.Error(), WarnLog)
 		return false
 	}
 
 	// Split the decrypted string into parts
 	parts := strings.Split(decrypted, "|")
 	if len(parts) < 5 {
-		logWithCaller("Decrypted token does not have enough parts", InfoLog)
+		logWithCaller("Decrypted token does not have enough parts", WarnLog)
 		return false
 	}
 
 	timestamp := parts[0]
 	if timestamp == "" {
-		logWithCaller("Timestamp is empty", InfoLog)
+		logWithCaller("Timestamp is empty", WarnLog)
 		return false
 	}
 	if len(timestamp) != len(time.RFC3339Nano) {
-		logWithCaller("Timestamp is not in the correct format", InfoLog)
+		logWithCaller(fmt.Sprint("Timestamp %s has not the correct length. Must be %v but is %v", timestamp, len(time.RFC3339Nano), len(timestamp)), WarnLog)
 		return false
 	}
 
 	timestampTime, err := time.Parse(time.RFC3339Nano, timestamp)
 	if err != nil {
-		logWithCaller("Failed to parse timestamp: "+err.Error(), InfoLog)
+		logWithCaller("Failed to parse timestamp: "+err.Error(), WarnLog)
 		return false
 	}
 	if timestampTime.After(time.Now()) {
-		logWithCaller("Creation Timestamp is after today", InfoLog)
+		logWithCaller("Creation Timestamp is after today", WarnLog)
 		return false
 	}
 
 	exparationTimestamp := parts[1]
 	if exparationTimestamp == "" {
-		logWithCaller("Exparation Timestamp is empty", InfoLog)
+		logWithCaller("Exparation Timestamp is empty", WarnLog)
 		return false
 	}
 	if len(exparationTimestamp) != len(time.RFC3339Nano) {
-		logWithCaller("Exparation Timestamp is not in the correct format", InfoLog)
+		logWithCaller("Exparation Timestamp is not in the correct format", WarnLog)
 		return false
 	}
 
 	exparationTime, err := time.Parse(time.RFC3339Nano, exparationTimestamp)
 	if err != nil {
-		logWithCaller("Failed to parse exparation timestamp: "+err.Error(), InfoLog)
+		logWithCaller("Failed to parse exparation timestamp: "+err.Error(), WarnLog)
 		return false
 	}
 	if exparationTime.Before(time.Now()) {
-		logWithCaller("Token expired: "+exparationTimestamp, InfoLog)
+		logWithCaller("Token expired: "+exparationTimestamp, WarnLog)
 		return false
 	}
 	usernameToken := parts[2]
 	if usernameToken == "" {
-		logWithCaller("Username is empty", InfoLog)
+		logWithCaller("Username is empty", WarnLog)
 		return false
 	}
 	if usernameToken != username {
-		logWithCaller("Username does not match", InfoLog)
+		logWithCaller("Username does not match", WarnLog)
 		return false
 	}
 
 	applicationName := parts[3]
 	if applicationName != getApplicationName() {
-		logWithCaller("Application name does not match", InfoLog)
+		logWithCaller("Application name does not match", WarnLog)
 		return false
 	}
 	tokenRights := parts[4:]
@@ -248,7 +248,7 @@ func checkTokeHasRight(token, right, username string) bool {
 		}
 	}
 
-	logWithCaller("Token does not have the right: "+right, InfoLog)
+	logWithCaller("Token does not have the right: "+right, WarnLog)
 
 	return false
 }
