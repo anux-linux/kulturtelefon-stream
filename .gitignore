@@ -23,3 +23,13 @@ go.work.sum
 
 # env file
 .env
+
+bin/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.log
+icecast_mounts/
+*.config

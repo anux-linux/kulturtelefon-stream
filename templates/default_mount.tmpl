@@ -1,0 +1,12 @@
+<mount>
+    <mount-name>{{.MountName}}</mount-name>
+    <!-- Require authentication for streaming -->
+    <authentication type="htpasswd">
+        <option name="username">{{.Username}}</option>
+        <option name="password">{{.Password}}</option>
+    </authentication>
+    <!-- Allow anyone to listen -->
+    <public>{{.Public}}</public>
+    <stream-name>{{.StreamName}}</stream-name>
+    <stream-description>{{.StreamDescription}}</stream-description>
+</mount>
