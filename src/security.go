@@ -205,10 +205,6 @@ func checkTokeHasRight(token, right, username string) bool {
 		logWithCaller("Exparation Timestamp is empty", WarnLog)
 		return false
 	}
-	if len(exparationTimestamp) != len(time.RFC3339Nano) {
-		logWithCaller("Exparation Timestamp is not in the correct format", WarnLog)
-		return false
-	}
 
 	exparationTime, err := time.Parse(time.RFC3339Nano, exparationTimestamp)
 	if err != nil {
