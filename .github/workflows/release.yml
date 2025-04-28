@@ -1,0 +1,48 @@
+name: Build adn Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on tags that start with 'v' (like v1.0.0)
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24.1' # Use the Go version you need
+      
+      - name: Build for Linux (amd64)
+        run: |
+          mkdir -p releases
+          cd src
+          go mod tidy
+          GOOS=linux GOARCH=amd64 go build -o ../releases/kulturtelefon-stream-linux-amd64
+      
+      - name: Build for Linux (arm64)
+        run: |
+          cd src
+          GOOS=linux GOARCH=arm64 go build -o ../releases/kulturtelefon-stream-linux-arm64
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            releases/kulturtelefon-stream-linux-amd64
+            releases/kulturtelefon-stream-linux-arm64
+            releases/kulturtelefon-stream-windows-amd64.exe
+            releases/kulturtelefon-stream-macos-amd64
+            releases/kulturtelefon-stream-macos-arm64
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
