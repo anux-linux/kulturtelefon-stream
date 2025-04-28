@@ -190,7 +190,7 @@ func checkTokeHasRight(token, right, username string) bool {
 		return false
 	}
 	if len(timestamp) != len(time.RFC3339Nano) {
-		logWithCaller(fmt.Sprint("Timestamp %s has not the correct length. Must be %v but is %v", timestamp, len(time.RFC3339Nano), len(timestamp)), WarnLog)
+		logWithCaller(fmt.Sprintf("Timestamp %s has not the correct length. Must be %v but is %v", timestamp, len(time.RFC3339Nano), len(timestamp)), WarnLog)
 		return false
 	}
 
