@@ -1,0 +1,7 @@
+icecast_mounts_folder: /path/to/icecast/mounts
+db_file: ./streams.db
+default_mount_template: ./templates/default_mount.tmpl
+private_mount_template: ./templates/private_mount.tmpl
+secret_key:
+admin_username:
+admin_password:
