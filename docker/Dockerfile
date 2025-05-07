@@ -16,9 +16,9 @@ RUN apt-get update && \
 
 
 COPY icecast.xml /etc/icecast2/icecast.xml
-COPY start.sh /start.sh
+COPY startup.sh /startup.sh
 
-CMD ["/start.sh"]
+CMD ["/startup.sh"]
 EXPOSE 8000
 
 VOLUME ["/config", "/var/log/icecast2", "/etc/icecast2", "/etc/icecast2/mounts"]
