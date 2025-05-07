@@ -9,9 +9,7 @@ RUN apt-get update && \
     apt-get -y autoclean && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    chown -R icecast2 /etc/icecast2 && \
-    chmod 777 /var/log/icecast2/access.log && \
-    chmod 777 /var/log/icecast2/error.log
+    chown -R icecast2 /etc/icecast2 
 
 
 
