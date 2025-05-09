@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -29,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	setLogLevel(LogType(logLevel))
-	logWithCaller("Set Loglevel to %s", LogType(logLevel))
+	logWithCaller(fmt.Sprintf("Set Loglevel to %s", logLevel), InfoLog)
 
 	config, err := ReadConfigFile(*configFileLocation)
 	if err != nil {
@@ -42,11 +43,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Print("Starting StreamAPI server")
-	streamApiServer, err := StreamAPI(":8888", *config)
-	if err != nil {
-		log.Fatal("Failed to create StreamAPI server")
-		return
+	port := os.Getenv("STREAM_API_PORT")
+	if port == "" {
+		port = "8080" // Default port if not set
 	}
-	streamApiServer.Run()
+
+	logWithCaller(fmt.Sprintf("Using port: %s", port), InfoLog)
+
+	logWithCaller("Starting StreamAPI server", InfoLog)
+	streamApiServer, err := StreamAPI(":"+port, *config)
+	if err != nil {
+		logWithCaller("Failed to create StreamAPI server", FatalLog)
+		logWithCaller(err.Error(), FatalLog)
+		os.Exit(1)
+	}
+	// Handle the error from Run instead of letting it return
+	err = streamApiServer.Run()
+	if err != nil {
+		logWithCaller(fmt.Sprintf("StreamAPI server error: %s", err), FatalLog)
+		os.Exit(1)
+	}
+
+	logWithCaller("StreamAPI server stopped", InfoLog)
 }

@@ -5,7 +5,7 @@ type Config struct {
 	DbFile               string `yaml:"db_file"`
 	DefaultMountTemplate string `yaml:"default_mount_template"`
 	PrivateMountTemplate string `yaml:"private_mount_template"`
-	SecretKey            string `yaml:secret_key"`
+	SecretKey            string `yaml:"secret_key"`
 	AdminUsername        string `yaml:"admin_username"`
 	AdminPassword        string `yaml:"admin_password"`
 }

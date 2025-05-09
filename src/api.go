@@ -59,6 +59,8 @@ func StreamAPI(listenAddr string, config Config) (*ApiServer, error) {
 
 	storage.SaveUser(config.AdminUsername, config.AdminPassword)
 
+	logWithCaller(fmt.Sprintf("Created storage and icecast config for server listening on %s", listenAddr), DebugLog)
+
 	return &ApiServer{
 		listenAddr: listenAddr,
 		storage:    storage,
@@ -171,6 +173,7 @@ func (s *ApiServer) Run() error {
 		Addr:    s.listenAddr,
 		Handler: middlewareChain(router),
 	}
+	logWithCaller(fmt.Sprintf("Server listening on %s", server.Addr), DebugLog)
 
 	s.addPublicRoutes(router)
 	s.addAuthorizedRoutes(router)
