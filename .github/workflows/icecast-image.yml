@@ -2,8 +2,8 @@ name: Create and publish a icecast2 docker image
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*' # Trigger on tags that start with 'v' (like v1.0.0)
 
 env:
     REGISTRY: ghcr.io
