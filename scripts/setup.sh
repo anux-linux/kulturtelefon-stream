@@ -64,7 +64,7 @@ echo "Stream-api config set up successfully."
 echo "Copying docker compose config..."
 
 mkdir -p /etc/stream-api
-cp ./* /etc/stream-api/
+cp -r ./* /etc/stream-api/
 
 cd /etc/stream-api
 
