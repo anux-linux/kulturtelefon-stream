@@ -17,12 +17,14 @@ FROM debian:stable-slim
 WORKDIR /app
 
 COPY --from=builder /app/kulturtelefon .
+COPY startup.sh /startup.sh
 
 RUN chmod +x kulturtelefon
+RUN chmod +x startup.sh
 
 ENV STREAM_API_PORT=8080
 
 EXPOSE 8080
 
-# CMD ["./kulturtelefon", "--config", "/app/config.yaml", "--loglevel", "info"]
-CMD ["./kulturtelefon --config", "${CONFIG_PATH}", "--loglevel", "${LOG_LEVEL}"]
+# Use ENTRYPOINT for the executable
+ENTRYPOINT ["./startup.sh"]
