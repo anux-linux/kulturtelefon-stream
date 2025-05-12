@@ -18,6 +18,8 @@ WORKDIR /app
 
 COPY --from=builder /app/kulturtelefon .
 
+RUN chmod +x kulturtelefon
+
 ENV STREAM_API_PORT=8080
 
 EXPOSE 8080
