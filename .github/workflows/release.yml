@@ -55,7 +55,7 @@ jobs:
             GOOS=linux GOARCH=arm64 go build -o ../releases/kulturtelefon-stream-linux-arm64
         # Upload artifacts to make them available to the release job
         - name: Upload build artifacts
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: release-binaries
             path: releases/
@@ -68,7 +68,7 @@ jobs:
             packages: write
         steps:
         - name: Download build artifacts
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
           with:
             name: release-binaries
             path: releases/    
