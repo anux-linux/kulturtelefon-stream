@@ -13,7 +13,7 @@ if [ -z "$CERT_DOMAINS" ]; then
     exit 1
 fi
 
-if [ -z "$CERT_EMAILS" ]; then
+if [ -z "$CERT_EMAIL" ]; then
     echo "CERT_EMAILS is not set. Please set it and try again."
     exit 1
 fi
@@ -174,7 +174,7 @@ http {
                     <title>Kulturtelefon Streaming Service</title>
                     <style>
                         body {
-                        font-family: 'Helvetica Neue', Arial, sans-serif;
+                        font-family: "Helvetica Neue", Arial, sans-serif;
                         margin: 0;
                         padding: 0;
                         min-height: 100vh;
