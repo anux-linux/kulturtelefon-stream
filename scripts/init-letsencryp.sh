@@ -1,5 +1,12 @@
 #!/bin/bash
 
+APP_DIR=$1
+
+if [ -z "$APP_DIR" ]; then
+    echo "Usage: $0 <path_to_app_directory>"
+    exit 1
+fi
+
 # Check if CERT_DOMAINS and CERT_EMAILS are set
 if [ -z "$CERT_DOMAINS" ]; then
     echo "CERT_DOMAINS is not set. Please set it and try again."
@@ -12,10 +19,10 @@ if [ -z "$CERT_EMAILS" ]; then
 fi
 
 # Create directories for certbot if they don't exist
-mkdir -p ./docker/nginx/conf.d
+mkdir -p $APP_DIR/docker/nginx/conf.d
 
 # Create the initial nginx configuration for the HTTP challenge
-cat > ./docker/nginx/conf.d/default.conf << 'EOF'
+cat > $APP_DIR/docker/nginx/conf.d/default.conf << 'EOF'
 server {
     listen 80;
     server_name your-domain.com www.your-domain.com;
@@ -31,7 +38,7 @@ server {
 EOF
 
 # Update the nginx config with your domain
-sed -i "s/your-domain.com/$CERT_DOMAINS/g" ./nginx/conf.d/default.conf
+sed -i "s/your-domain.com/$CERT_DOMAINS/g" $APP_DIR/docker/nginx/conf.d/default.conf
 
 # Start nginx to handle the ACME challenge
 docker-compose up -d nginx
@@ -49,7 +56,7 @@ docker-compose run --rm certbot certonly --webroot \
 docker-compose down
 
 # Create the final nginx config with SSL
-cat > ./docker/nginx/nginx.conf << 'EOF'
+cat > $APP_DIR/docker/nginx/nginx.conf << 'EOF'
 user nginx;
 worker_processes auto;
 error_log /var/log/nginx/error.log warn;
@@ -267,6 +274,6 @@ http {
 EOF
 
 # Replace domain placeholders
-sed -i "s/DOMAIN_PLACEHOLDER/$CERT_DOMAINS/g" ./nginx.conf
+sed -i "s/DOMAIN_PLACEHOLDER/$CERT_DOMAINS/g" $APP_DIR/docker/nginx/nginx.conf
 
-echo "Initial setup completed. You can now start your services with docker-compose up -d"
+echo "Letsencrypt script completed"

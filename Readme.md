@@ -206,12 +206,20 @@ The API uses the following permission types:
 
 ## Install
 
-All scripts are located in the ```scripts``` directory. To set up stream-api for docker you need to run the set-up script ```setup.sh```.
+All scripts are located in the ```scripts``` directory. 
 
 
-1. Generate a new encryption key with ```generate-key.sh``` and not it down.
-2. Create a configuration file with all the parameters. An example of a configuration can be found in ```stream.config.sample```
-3. Install the api with the installer script ```install.sh```. This will download the latest binary, install icecast and nginx, configure all directories and install the api api as a service.
+1. Export Domain and E-Mail for Letsencrypt
+```bash
+export CERT_DOMAINS="yourdomain.com"
+export CERT_EMAIL="youremail@example.com"
+```
+2. Run the setup script for Let's Encrypt
+```bash
+cd ./scripts/
+./setup.sh
+```
+
 
 ## Backup and restore
 All scripts are located in the ```scripts``` directory.
