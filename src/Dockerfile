@@ -17,7 +17,7 @@ FROM debian:stable-slim
 WORKDIR /app
 
 COPY --from=builder /app/kulturtelefon .
-COPY startup.sh /startup.sh
+COPY startup.sh .
 
 RUN chmod +x kulturtelefon
 RUN chmod +x startup.sh
