@@ -16,10 +16,7 @@ RUN apt-get update && \
 COPY icecast.xml /etc/icecast2/icecast.xml
 COPY startup.sh /startup.sh
 
-RUN chmod +x /startup.sh && \
-    chmod 644 /etc/icecast2/icecast.xml && \
-    chown icecast2:icecast2 /etc/icecast2/icecast.xml && \
-    chown icecast2:icecast2 /startup.sh
+RUN chmod +x /startup.sh 
 
 CMD ["/startup.sh"]
 EXPOSE 8000
