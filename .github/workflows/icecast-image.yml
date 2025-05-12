@@ -1,4 +1,4 @@
-name: Create and publish a icecast2 docker image
+name: Build and publish a icecast2 docker image
 
 on:
   push:
