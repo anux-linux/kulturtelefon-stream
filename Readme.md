@@ -206,7 +206,7 @@ The API uses the following permission types:
 
 ## Install
 
-All scripts are located in the ```scripts``` directory.
+All scripts are located in the ```scripts``` directory. To set up stream-api for docker you need to run the set-up script ```setup.sh```.
 
 
 1. Generate a new encryption key with ```generate-key.sh``` and not it down.
