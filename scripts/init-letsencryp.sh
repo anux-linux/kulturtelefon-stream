@@ -14,7 +14,7 @@ if [ -z "$CERT_DOMAINS" ]; then
 fi
 
 if [ -z "$CERT_EMAIL" ]; then
-    echo "CERT_EMAILS is not set. Please set it and try again."
+    echo "CERT_EMAIL is not set. Please set it and try again."
     exit 1
 fi
 

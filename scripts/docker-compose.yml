@@ -5,9 +5,9 @@ services:
     image: ghcr.io/anux-linux/kulturtelefon-stream/icecast2
     restart: unless-stopped
     volumes:
-      - ./docker/icecast/mounts:/etc/icecast2/mounts
-      - ./docker/logs/icecast:/var/log/icecast2
-      - ./docker/data/icecast:/var/lib/icecast2
+      - /etc/stream-api/docker/icecast/mounts:/etc/icecast2/mounts
+      - /etc/stream-api/docker/logs/icecast:/var/log/icecast2
+      - /etc/stream-api/docker/data/icecast:/var/lib/icecast2
     environment:
       - ICECAST_USER=source
       - ICECAST_PASSWORD=hackme
@@ -20,10 +20,10 @@ services:
     image: ghcr.io/anux-linux/kulturtelefon-stream/stream-api
     restart: unless-stopped
     volumes:
-      - ./docker/config/stream.config:/app/config/stream.config
-      - ./docker/data/stream-api:/app/data
-      - ./docker/logs/stream-api:/var/log/stream-api
-      - ./docker/icecast/mounts:/app/icecast/mounts
+      - /etc/stream-api/docker/config/stream.config:/app/config/stream.config
+      - /etc/stream-api/docker/data/stream-api:/app/data
+      - /etc/stream-api/docker/logs/stream-api:/var/log/stream-api
+      - /etc/stream-api/docker/icecast/mounts:/app/icecast/mounts
     environment:
       - STREAM_API_PORT=8080
       - CONFIG_PATH=/app/config/stream.config
@@ -38,11 +38,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./docker/certbot/www:/var/www/certbot
-      - ./docker/certbot/certs:/etc/nginx/ssl
-      - ./docker/logs/nginx:/var/log/nginx
+      - /etc/stream-api/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /etc/stream-api/docker/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/stream-api/docker/certbot/www:/var/www/certbot
+      - /etc/stream-api/docker/certbot/certs:/etc/nginx/ssl
+      - /etc/stream-api/docker/logs/nginx:/var/log/nginx
     depends_on:
       - icecast
       - stream-api
@@ -53,8 +53,8 @@ services:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./docker/certbot/www:/var/www/certbot
-      - ./docker/certbot/certs:/etc/letsencrypt
+      - /etc/stream-api/docker/certbot/www:/var/www/certbot
+      - /etc/stream-api/docker/certbot/certs:/etc/letsencrypt
     depends_on:
       - nginx
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
@@ -65,7 +65,7 @@ services:
     image: alpine
     restart: unless-stopped
     volumes:
-      - ./docker/logs/stream-api:/var/logs/stream-api
+      - /etc/stream-api/docker/logs/stream-api:/var/logs/stream-api
     depends_on:
       - stream-api
     command: |
