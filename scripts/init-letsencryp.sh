@@ -18,43 +18,6 @@ if [ -z "$CERT_EMAIL" ]; then
     exit 1
 fi
 
-# Create directories for certbot if they don't exist
-mkdir -p $APP_DIR/docker/nginx/conf.d
-
-# Create the initial nginx configuration for the HTTP challenge
-cat > $APP_DIR/docker/nginx/conf.d/default.conf << 'EOF'
-server {
-    listen 80;
-    server_name your-domain.com www.your-domain.com;
-    
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-    
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-EOF
-
-# Update the nginx config with your domain
-sed -i "s/your-domain.com/$CERT_DOMAINS/g" $APP_DIR/docker/nginx/conf.d/default.conf
-
-# Start nginx to handle the ACME challenge
-docker-compose up -d nginx
-
-# Request the certificate
-docker-compose run --rm certbot certonly --webroot \
-  --webroot-path=/var/www/certbot \
-  --email $CERT_EMAIL \
-  --agree-tos \
-  --no-eff-email \
-  --force-renewal \
-  -d $CERT_DOMAINS
-
-# Stop services to update config
-docker-compose down
-
 # Create the final nginx config with SSL
 cat > $APP_DIR/docker/nginx/nginx.conf << 'EOF'
 user nginx;
@@ -276,5 +239,20 @@ EOF
 
 # Replace domain placeholders
 sed -i "s/DOMAIN_PLACEHOLDER/$CERT_DOMAINS/g" $APP_DIR/docker/nginx/nginx.conf
+
+# Start nginx to handle the ACME challenge
+docker-compose up -d nginx
+
+# Request the certificate
+docker-compose run --rm certbot certonly --webroot \
+  --webroot-path=/var/www/certbot \
+  --email $CERT_EMAIL \
+  --agree-tos \
+  --no-eff-email \
+  --force-renewal \
+  -d $CERT_DOMAINS
+
+# Stop services to update config
+docker-compose down
 
 echo "Letsencrypt script completed"
