@@ -19,6 +19,7 @@ WORKDIR /app
 COPY --from=builder /app/kulturtelefon .
 COPY startup.sh .
 
+RUN apt-get update && apt-get install -y curl
 RUN chmod +x kulturtelefon
 RUN chmod +x startup.sh
 
