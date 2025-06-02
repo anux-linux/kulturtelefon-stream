@@ -52,6 +52,7 @@ services:
     volumes:
       - /etc/stream-api/docker/certbot/www:/var/www/certbot
       - /etc/stream-api/docker/certbot/certs:/etc/letsencrypt
+      - /etc/stream-api/docker/logs/certbot/letsencrypt:/var/log/letsencrypt
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - icecast-net
