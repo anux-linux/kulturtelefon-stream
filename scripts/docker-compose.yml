@@ -43,9 +43,6 @@ services:
       - /etc/stream-api/docker/certbot/www:/var/www/certbot
       - /etc/stream-api/docker/certbot/certs:/etc/nginx/ssl
       - /etc/stream-api/docker/logs/nginx:/var/log/nginx
-    depends_on:
-      - icecast
-      - stream-api
     networks:
       - icecast-net
 
@@ -55,8 +52,6 @@ services:
     volumes:
       - /etc/stream-api/docker/certbot/www:/var/www/certbot
       - /etc/stream-api/docker/certbot/certs:/etc/letsencrypt
-    depends_on:
-      - nginx
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - icecast-net
@@ -66,8 +61,6 @@ services:
     restart: unless-stopped
     volumes:
       - /etc/stream-api/docker/logs/stream-api:/var/logs/stream-api
-    depends_on:
-      - stream-api
     command: |
       /bin/sh -c "mkdir -p /var/logs/stream-api && 
                   tail -f /proc/1/fd/1 > /var/logs/stream-api/application.log"
