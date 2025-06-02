@@ -21,4 +21,4 @@ set_value $ICECAST_HOSTNAME        hostname
 
 set -e
 
-sudo -Eu icecast2 icecast2 -n -c /etc/icecast2/icecast.xml
+icecast2 icecast2 -n -c /etc/icecast2/icecast.xml
