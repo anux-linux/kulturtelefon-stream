@@ -203,7 +203,7 @@ func (s *ApiServer) handleHealthCheck(w http.ResponseWriter, r *http.Request) er
 }
 
 func (s *ApiServer) handleVersion(w http.ResponseWriter, r *http.Request) error {
-	return WriteJson(w, http.StatusOK, map[string]string{"version": "0.0.1"})
+	return WriteJson(w, http.StatusOK, map[string]string{"version": "0.0.5"})
 }
 
 // ###########
