@@ -18,6 +18,91 @@ if [ -z "$CERT_EMAIL" ]; then
     exit 1
 fi
 
+# Create directories for certbot if they don't exist
+mkdir -p $APP_DIR/docker/nginx/conf.d
+mkdir -p $APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS
+
+# Create dummy certificates for initial nginx startup
+if [ ! -f "$APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS/fullchain.pem" ]; then
+    echo "Creating dummy certificate for $CERT_DOMAINS..."
+    mkdir -p $APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS
+    
+    openssl req -x509 -nodes -newkey rsa:2048 \
+        -days 1 \
+        -keyout $APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS/privkey.pem \
+        -out $APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS/fullchain.pem \
+        -subj "/CN=$CERT_DOMAINS"
+fi
+
+# Create the initial nginx configuration for HTTP challenge ONLY
+cat > $APP_DIR/docker/nginx/nginx.conf << 'EOF'
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+    
+    access_log /var/log/nginx/access.log main;
+    
+    sendfile on;
+    keepalive_timeout 65;
+    
+    # HTTP server for ACME challenge
+    server {
+        listen 80;
+        server_name DOMAIN_PLACEHOLDER;
+        
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+        }
+        
+        location / {
+            return 200 'Nginx is running. SSL setup in progress...';
+            add_header Content-Type text/plain;
+        }
+    }
+}
+EOF
+
+# Replace domain placeholders
+sed -i "s/DOMAIN_PLACEHOLDER/$CERT_DOMAINS/g" $APP_DIR/docker/nginx/nginx.conf
+
+echo "Starting nginx with HTTP-only config..."
+# Start nginx to handle the ACME challenge
+docker-compose up -d nginx
+
+# Wait for nginx to be ready
+sleep 5
+
+echo "Requesting SSL certificate for $CERT_DOMAINS..."
+# Request the certificate
+docker-compose run --rm certbot certonly --webroot \
+  --webroot-path=/var/www/certbot \
+  --email $CERT_EMAIL \
+  --agree-tos \
+  --no-eff-email \
+  --force-renewal \
+  -d $CERT_DOMAINS
+
+# Check if certificate was created successfully
+if [ ! -f "$APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS/fullchain.pem" ]; then
+    echo "Certificate generation failed. Check the logs above."
+    exit 1
+fi
+
+echo "Certificate obtained successfully. Creating full nginx config with SSL..."
+
 # Create the final nginx config with SSL
 cat > $APP_DIR/docker/nginx/nginx.conf << 'EOF'
 user nginx;
@@ -240,19 +325,9 @@ EOF
 # Replace domain placeholders
 sed -i "s/DOMAIN_PLACEHOLDER/$CERT_DOMAINS/g" $APP_DIR/docker/nginx/nginx.conf
 
-# Start nginx to handle the ACME challenge
-docker-compose up -d nginx
+echo "Reloading nginx with SSL configuration..."
+# Reload nginx configuration
+docker-compose exec nginx nginx -s reload
 
-# Request the certificate
-docker-compose run --rm certbot certonly --webroot \
-  --webroot-path=/var/www/certbot \
-  --email $CERT_EMAIL \
-  --agree-tos \
-  --no-eff-email \
-  --force-renewal \
-  -d $CERT_DOMAINS
-
-# Stop services to update config
-docker-compose down
-
-echo "Letsencrypt script completed"
+echo "Letsencrypt script completed successfully!"
+echo "Your site should now be available at https://$CERT_DOMAINS"

@@ -65,7 +65,7 @@ echo "Stream-api config set up successfully."
 echo "Init letsencrypt..."
 
 
-./init-letsencryp.sh $APP_DIR
+./init-letsencrypt.sh $APP_DIR
 if [ $? -ne 0 ]; then
     echo "Failed to initialize Let's Encrypt"
     exit 1
