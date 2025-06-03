@@ -94,10 +94,10 @@ rm -f $APP_DIR/docker/certbot/certs/renewal/$CERT_DOMAINS.conf
 # Request the certificate (without --force-renewal since we're starting fresh)
 docker-compose run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
-    $staging_arg \
-    $email_arg \
-    $domain_args \
-    --rsa-key-size $rsa_key_size \
+    0 \
+    $CERT_EMAIL \
+    $CERT_DOMAINS \
+    --rsa-key-size 4096 \
     --agree-tos \
     --force-renewal" certbot
 
