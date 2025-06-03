@@ -86,13 +86,18 @@ docker-compose up -d nginx
 sleep 5
 
 echo "Requesting SSL certificate for $CERT_DOMAINS..."
-# Request the certificate
+# Remove any existing certificates first to force a fresh request
+rm -rf $APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS
+rm -rf $APP_DIR/docker/certbot/certs/archive/$CERT_DOMAINS
+rm -f $APP_DIR/docker/certbot/certs/renewal/$CERT_DOMAINS.conf
+
+# Request the certificate (without --force-renewal since we're starting fresh)
 docker-compose run --rm certbot certonly --webroot \
   --webroot-path=/var/www/certbot \
   --email $CERT_EMAIL \
   --agree-tos \
   --no-eff-email \
-  --force-renewal \
+  --expand \
   -d $CERT_DOMAINS
 
 # Check if certificate was created successfully
