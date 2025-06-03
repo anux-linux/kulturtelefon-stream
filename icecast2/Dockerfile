@@ -18,9 +18,6 @@ COPY startup.sh /startup.sh
 
 RUN chmod +x /startup.sh 
 
-RUN adduser -D -s /bin/sh icecast && \
-    chown -R icecast:icecast /etc/icecast2 /var/log/icecast2 /var/lib/icecast2
-
 CMD ["/startup.sh"]
 EXPOSE 8000
 

@@ -237,8 +237,8 @@
         <chroot>0</chroot>
         
         <changeowner>
-            <user>icecast</user>
-            <group>icecast</group>
+            <user>icecast2</user>
+            <group>icecast2</group>
         </changeowner>
         
     </security>
