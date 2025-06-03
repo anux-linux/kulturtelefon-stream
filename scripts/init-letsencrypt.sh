@@ -13,11 +13,6 @@ if [ -z "$CERT_DOMAINS" ]; then
     exit 1
 fi
 
-if [ -z "$CERT_EMAIL" ]; then
-    echo "CERT_EMAIL is not set. Please set it and try again."
-    exit 1
-fi
-
 # Create directories for certbot if they don't exist
 mkdir -p $APP_DIR/docker/nginx/conf.d
 mkdir -p $APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS
@@ -94,9 +89,8 @@ rm -f $APP_DIR/docker/certbot/certs/renewal/$CERT_DOMAINS.conf
 # Request the certificate (without --force-renewal since we're starting fresh)
 docker-compose run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
-    0 \
-    $CERT_EMAIL \
-    $CERT_DOMAINS \
+    --register-unsafely-without-email \
+    -d $CERT_DOMAINS \
     --rsa-key-size 4096 \
     --agree-tos \
     --force-renewal" certbot
