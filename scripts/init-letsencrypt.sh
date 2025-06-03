@@ -92,13 +92,16 @@ rm -rf $APP_DIR/docker/certbot/certs/archive/$CERT_DOMAINS
 rm -f $APP_DIR/docker/certbot/certs/renewal/$CERT_DOMAINS.conf
 
 # Request the certificate (without --force-renewal since we're starting fresh)
-docker-compose run --rm certbot certonly --webroot \
-  --webroot-path=/var/www/certbot \
-  --email $CERT_EMAIL \
-  --agree-tos \
-  --no-eff-email \
-  --expand \
-  -d $CERT_DOMAINS
+docker-compose run --rm --entrypoint "\
+  certbot certonly --webroot -w /var/www/certbot \
+    $staging_arg \
+    $email_arg \
+    $domain_args \
+    --rsa-key-size $rsa_key_size \
+    --agree-tos \
+    --force-renewal" certbot
+
+echo "Certificate request completed. Checking for errors..."
 
 # Check if certificate was created successfully
 if [ ! -f "$APP_DIR/docker/certbot/certs/live/$CERT_DOMAINS/fullchain.pem" ]; then
