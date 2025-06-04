@@ -13,11 +13,19 @@ set_value() {
     fi
 }
 
+# Set default values if environment variables are not provided
+ICECAST_SOURCE_PASSWORD=${ICECAST_SOURCE_PASSWORD:-hackme}
+ICECAST_RELAY_PASSWORD=${ICECAST_RELAY_PASSWORD:-hackme}
+ICECAST_ADMIN_PASSWORD=${ICECAST_ADMIN_PASSWORD:-hackme}
+ICECAST_PASSWORD=${ICECAST_PASSWORD:-hackme}
+ICECAST_HOSTNAME=${ICECAST_HOSTNAME:-icecast2}
+
 set_value $ICECAST_SOURCE_PASSWORD source-password
 set_value $ICECAST_RELAY_PASSWORD  relay-password
 set_value $ICECAST_ADMIN_PASSWORD  admin-password
 set_value $ICECAST_PASSWORD        password
 set_value $ICECAST_HOSTNAME        hostname
+
 
 set -e
 
