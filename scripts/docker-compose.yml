@@ -7,7 +7,6 @@ services:
     volumes:
       - /etc/stream-api/docker/icecast/mounts:/etc/icecast2/mounts
       - /etc/stream-api/docker/logs/icecast:/var/log/icecast2
-      - /etc/stream-api/docker/data/icecast:/var/lib/icecast2
     environment:
       - ICECAST_USER=source
       - ICECAST_PASSWORD=hackme

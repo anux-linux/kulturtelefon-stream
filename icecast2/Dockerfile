@@ -18,7 +18,6 @@ RUN chmod +x /startup.sh
 
 RUN chown -R icecast2 /etc/icecast2
 RUN chown -R icecast2 /var/log/icecast2
-RUN chown -R icecast2 /var/lib/icecast2
 
 CMD ["/startup.sh"]
 EXPOSE 8000
