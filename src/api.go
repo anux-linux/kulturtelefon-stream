@@ -57,8 +57,6 @@ func StreamAPI(listenAddr string, config Config) (*ApiServer, error) {
 		return nil, fmt.Errorf("failed to create icecast config")
 	}
 
-	storage.SaveUser(config.AdminUsername, config.AdminPassword)
-
 	logWithCaller(fmt.Sprintf("Created storage and icecast config for server listening on %s", listenAddr), DebugLog)
 
 	return &ApiServer{
