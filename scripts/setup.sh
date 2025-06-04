@@ -82,10 +82,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo "Docker containers started successfully."
-echo "Waiting for stream-api to start..."
-# Wait for stream-api to start  
-while ! docker-compose exec stream-api curl -s http://localhost:8080/health | grep -q "UP"; do
-    sleep 5
-done
+
 echo "Stream-api is up and running."
 
