@@ -27,14 +27,26 @@ services:
       - STREAM_API_PORT=8080
       - CONFIG_PATH=/app/config/stream.config
       - LOG_LEVEL=info
-    logging:
-      driver: "local"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        path: "/etc/stream-api/docker/logs/stream-api"
     networks:
       - icecast-net
+
+  stream-api-logger:
+    image: alpine
+    restart: unless-stopped
+    volumes:
+      - /etc/stream-api/docker/logs/stream-api:/logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - stream-api
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache docker-cli &&
+        sleep 10 &&
+        while true; do
+          docker logs --tail=0 -f scripts_stream-api_1 >> /logs/application.log 2>&1 || sleep 5
+        done
   
   nginx:
     image: nginx:latest
