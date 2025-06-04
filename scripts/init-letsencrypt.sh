@@ -178,7 +178,7 @@ http {
         proxy_set_header X-Forwarded-Proto $scheme;
         
         # Stream API
-        location /api/ {
+        location /manager/ {
             proxy_pass http://stream-api:8080/;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
