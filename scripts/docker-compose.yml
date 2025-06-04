@@ -70,55 +70,50 @@ services:
     image: alpine
     restart: unless-stopped
     volumes:
-    - /etc/stream-api/docker/logs:/logs
-    command: |
-      /bin/sh -c "
-      apk add --no-cache logrotate &&
-      cat > /etc/logrotate.conf << 'EOF'
-      /logs/nginx/*.log {
-        rotate 7
-        daily
-        compress
-        missingok
-        notifempty
-        create 644 root root
-        postrotate
-          /bin/kill -USR1 \$(cat /var/run/nginx.pid 2>/dev/null) 2>/dev/null || true
-        endscript
-      }
-
-      /logs/icecast/*.log {
-        rotate 7
-        daily
-        compress
-        missingok
-        notifempty
-        create 644 root root
-      }
-
-      /logs/stream-api/*.log {
-        rotate 7
-        daily
-        compress
-        missingok
-        notifempty
-        create 644 root root
-      }
-
-      /logs/certbot/*.log {
-        rotate 7
-        daily
-        compress
-        missingok
-        notifempty
-        create 644 root root
-      }
-      EOF
-      while true; do
-        logrotate /etc/logrotate.conf
-        sleep 86400
-      done
-      "
+      - /etc/stream-api/docker/logs:/logs
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache logrotate &&
+        cat > /etc/logrotate.conf << 'EOF'
+        /logs/nginx/*.log {
+          rotate 7
+          daily
+          compress
+          missingok
+          notifempty
+          create 644 root root
+        }
+        /logs/icecast/*.log {
+          rotate 7
+          daily
+          compress
+          missingok
+          notifempty
+          create 644 root root
+        }
+        /logs/stream-api/*.log {
+          rotate 7
+          daily
+          compress
+          missingok
+          notifempty
+          create 644 root root
+        }
+        /logs/certbot/*.log {
+          rotate 7
+          daily
+          compress
+          missingok
+          notifempty
+          create 644 root root
+        }
+        EOF
+        while true; do
+          logrotate /etc/logrotate.conf
+          sleep 86400
+        done
 
 networks:
   icecast-net:
