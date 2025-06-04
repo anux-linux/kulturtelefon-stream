@@ -29,4 +29,7 @@ set_value $ICECAST_HOSTNAME        hostname
 
 set -e
 
+chown -R icecast2 /var/log/icecast2
+chown -R icecast2 /etc/icecast2
+
 icecast2 icecast2 -n -c /etc/icecast2/icecast.xml
