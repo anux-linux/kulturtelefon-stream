@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     volumes:
       - /etc/stream-api/docker/icecast/mounts:/etc/icecast2/mounts
+      - /etc/stream-api/docker/icecast/icecast.xml:/etc/icecast2/icecast.xml
       - /etc/stream-api/docker/logs/icecast:/var/log/icecast2
     environment:
       - ICECAST_USER=source

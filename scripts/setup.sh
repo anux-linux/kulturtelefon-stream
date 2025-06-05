@@ -25,7 +25,7 @@ mkdir -p $APP_DIR/docker/certbot/certs
 echo "Directories set up successfully."
 
 echo "Coping default templates..."
-cp -r ./templates $APP_DIR/docker/data/templates
+cp -r ./templates $APP_DIR/docker/data/stream-api/templates
 
 echo "Templates copied successfully."
 
